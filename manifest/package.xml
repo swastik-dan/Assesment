@@ -5,7 +5,11 @@
 		<name>ApexClass</name>
 	</types>
 	<types>
-		<members>CandidateTrigger</members>
+		<members>*</members>
+		<name>ApexPage</name>
+	</types>
+	<types>
+		<members>*</members>
 		<name>ApexTrigger</name>
 	</types>
 	<version>60.0</version>

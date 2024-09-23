@@ -14,6 +14,10 @@ public with sharing class CandidateTriggerHandler extends TriggerHandler {
     this.setMaxLoopCount(1);
   }
 
+  /**
+   * @description : This method is called before inserting new candidate records. It creates new contacts for candidates whose email addresses do not exist in the system, and sends welcome emails to new candidates.
+   * @author Swastik Dan | 09-20-2024
+   **/
   public override void beforeInsert() {
     List<Messaging.SingleEmailMessage> emailsToSend = new List<Messaging.SingleEmailMessage>();
     Map<String, Id> emailToContactIdMap = new Map<String, Id>();
@@ -71,6 +75,7 @@ public with sharing class CandidateTriggerHandler extends TriggerHandler {
     }
   }
   // Extract candidate email addresses
+  @testVisible
   private Contact createContactFromCandidate(Candidate__c candidate) {
     Contact contact = new Contact();
     contact.FirstName = candidate.First_Name__c;
