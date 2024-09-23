@@ -2,7 +2,7 @@
  * @description       :
  * @author            : Swastik Dan
  * @group             :
- * @last modified on  : 09-20-2024
+ * @last modified on  : 09-23-2024
  * @last modified by  : Swastik Dan
  * @history           :
  **/
@@ -20,23 +20,32 @@ public with sharing class TestHelper {
       );
       candidates.add(candidate);
     }
-
-    insert candidates;
-
     return candidates;
   }
-  public static List<Contact> createGenericContact(Integer numberOfContact) {
+  public static List<Contact> createGenericContact(
+    Integer numberOfContact,
+    Integer startNumber
+  ) {
     List<Contact> contacts = new List<Contact>();
-    for (Integer i = 0; i < numberOfContact; i++) {
-      Contact contact = new Contact(
-        FirstName = 'Test First Name ' + i,
-        LastName = 'Test Last Name ' + i,
-        Email = 'test' + i + '@test.com'
-      );
-      contacts.add(contact);
+    if (startNumber == null) {
+      for (Integer i = 0; i < numberOfContact; i++) {
+        Contact contact = new Contact(
+          FirstName = 'Test First Name ' + i,
+          LastName = 'Test Last Name ' + i,
+          Email = 'test' + i + '@test.com'
+        );
+        contacts.add(contact);
+      }
+    } else {
+      for (Integer i = startNumber; i < numberOfContact; i++) {
+        Contact contact = new Contact(
+          FirstName = 'Test First Name ' + i,
+          LastName = 'Test Last Name ' + i,
+          Email = 'test' + i + '@test.com'
+        );
+        contacts.add(contact);
+      }
     }
-
-    insert contacts;
 
     return contacts;
   }

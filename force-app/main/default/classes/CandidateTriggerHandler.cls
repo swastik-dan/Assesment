@@ -2,15 +2,15 @@
  * @description       :
  * @author            : Swastik Dan
  * @group             :
- * @last modified on  : 09-20-2024
+ * @last modified on  : 09-23-2024
  * @last modified by  : Swastik Dan
  * @history           :
  **/
 public with sharing class CandidateTriggerHandler extends TriggerHandler {
   private List<Candidate__c> newCandidateList;
-
+  private Map<Id, Candidate__c> newCandidateMap;
   public CandidateTriggerHandler() {
-    this.newCandidateList = (List<Candidate__c>) Trigger.new;
+    this.newCandidateMap = (Map<Id, Candidate__c>) Trigger.newMap;
     this.setMaxLoopCount(1);
   }
 
@@ -18,7 +18,13 @@ public with sharing class CandidateTriggerHandler extends TriggerHandler {
    * @description : This method is called before inserting new candidate records. It creates new contacts for candidates whose email addresses do not exist in the system, and sends welcome emails to new candidates.
    * @author Swastik Dan | 09-20-2024
    **/
-  public override void beforeInsert() {
+  public override void afterInsert() {
+    this.newCandidateList = [
+      SELECT Id, First_Name__c, Last_Name__c, Email__c, Contact__c
+      FROM Candidate__c
+      WHERE id IN :newCandidateMap.keySet()
+      WITH USER_MODE
+    ];
     List<Messaging.SingleEmailMessage> emailsToSend = new List<Messaging.SingleEmailMessage>();
     Map<String, Id> emailToContactIdMap = new Map<String, Id>();
     List<Contact> contactsToInsert = new List<Contact>();
@@ -58,6 +64,8 @@ public with sharing class CandidateTriggerHandler extends TriggerHandler {
           candidate.Contact__c = emailToContactIdMap.get(candidate.Email__c); // Link candidate to contact
         }
       }
+      // update the user with the contact lookup
+      update as user newCandidateList;
 
       // Create and send email messages using the welcome email template
       for (Candidate__c candidate : newCandidateList) {
@@ -102,7 +110,7 @@ public with sharing class CandidateTriggerHandler extends TriggerHandler {
     Messaging.SingleEmailMessage email = new Messaging.SingleEmailMessage();
     email.setTemplateId(templateId);
     email.setTargetObjectId(candidate.Contact__c);
-    email.setSaveAsActivity(false);
+    email.setSaveAsActivity(true);
     email.setWhatId(candidate.Id);
     return email;
   }

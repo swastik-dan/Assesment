@@ -10,13 +10,13 @@
 @isTest
 public class CandidateTriggerTest {
   /**
-  * @description : Test candidate insert
-  * @author Swastik Dan | 09-23-2024 
-  **/
+   * @description : Test candidate insert
+   * @author Swastik Dan | 09-23-2024
+   **/
   @isTest
   static void testCandidateInsert() {
     Test.startTest();
-    List<Candidate__c> candidates = TestHelper.createGenericCandidate(2);
+    List<Candidate__c> candidates = TestHelper.createGenericCandidate(4);
     insert as user candidates;
     Test.stopTest();
 
@@ -39,14 +39,16 @@ public class CandidateTriggerTest {
   }
 
   /**
-  * @description : Test if contact already exists
-  * @author Swastik Dan | 09-23-2024 
-  **/
+   * @description : Test if contact already exists
+   * @author Swastik Dan | 09-23-2024
+   **/
   @isTest
   static void testIfContactAlreadyExists() {
     Test.startTest();
+    List<Contact> contacts = TestHelper.createGenericContact(10, 4);
+    insert as user contacts;
     List<Candidate__c> candidates = TestHelper.createGenericCandidate(10);
-    insert as users candidates;
+    insert as user candidates;
     Test.stopTest();
 
     List<String> emailList = new List<String>();
@@ -66,18 +68,4 @@ public class CandidateTriggerTest {
       'Contact records are not created'
     );
   }
-
-  // @isTest
-  // static void testLogOnException() {
-  //   Test.startTest();
-  //   insert new Log__c(Log_Message__c = 'Test Message');
-  //   Test.stopTest();
-
-  //   List<Log__c> logs = [
-  //     SELECT Id, Log_Message__c
-  //     FROM Log__c
-  //     WITH USER_MODE
-  //   ];
-  //   System.assertEquals(1, logs.size(), 'Log record is not created');
-  // }
 }

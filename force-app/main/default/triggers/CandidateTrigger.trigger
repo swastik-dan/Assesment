@@ -6,7 +6,7 @@
  * @last modified by  : Swastik Dan
  * @history           :
  **/
-trigger CandidateTrigger on Candidate__c(before insert) {
+trigger CandidateTrigger on Candidate__c(after insert) {
   new CandidateTriggerHandler().run();
   System.debug('Trigger caled');
 
