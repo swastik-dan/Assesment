@@ -15,7 +15,7 @@ public with sharing class CandidateTriggerHandler extends TriggerHandler {
   }
 
   /**
-   * @description : This method is called before inserting new candidate records. It creates new contacts for candidates whose email addresses do not exist in the system, and sends welcome emails to new candidates.
+   * @description : This method is called after inserting new candidate records. It creates new contacts for candidates whose email addresses do not exist in the system, and sends welcome emails to new candidates.
    * @author Swastik Dan | 09-20-2024
    **/
   public override void afterInsert() {
