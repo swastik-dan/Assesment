@@ -2,7 +2,7 @@
  * @description       : Test class for CandidateTriggerHandler class to test the trigger functionality of Candidate object
  * @author            : Swastik Dan
  * @group             :
- * @last modified on  : 09-23-2024
+ * @last modified on  : 09-26-2024
  * @last modified by  : Swastik Dan
  * @history           :
  **/
@@ -13,6 +13,7 @@ public class CandidateTriggerTest {
    * @description : Test candidate insert
    * @author Swastik Dan | 09-23-2024
    **/
+
   @isTest
   static void testCandidateInsert() {
     Test.startTest();

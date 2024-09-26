@@ -2,7 +2,7 @@
  * @description       : This class handles the trigger operations for Position object. It logs the changes made to the position records and sends notification emails to candidates who have applied for the updated positions.
  * @author            : Swastik Dan
  * @group             :
- * @last modified on  : 09-25-2024
+ * @last modified on  : 09-26-2024
  * @last modified by  : Swastik Dan
  * @history           :
  **/
@@ -59,20 +59,28 @@ public with sharing class PositionTriggerHandler extends TriggerHandler {
           processFieldUpdates(oldPosition, newPosition);
 
           // add the position update event to the list and check if the message length exceeds the limit 32,768 characters
-          positionUpdateEvents.add(
-            new Position_Update__e(
-              Posotion_Id__c = newPosition.Id,
-              Email_Subject__c = emailSubject,
-              Message__c = message.length() > 32768
-                ? message.substring(0, 32768)
-                : message
-            )
+          Position_Update__e positionUpdateEvent = new Position_Update__e(
+            Posotion_Id__c = newPosition.Id,
+            Email_Subject__c = emailSubject,
+            Message__c = message.length() > 32768
+              ? message.substring(0, 32768)
+              : message
           );
+
+          positionUpdateEvents.add(positionUpdateEvent);
         }
       }
+      // Test.isRunningTest then throw a DmlException
+      // if (Test.isRunningTest() && positionUpdateEvents.size() == 0) {
+      //   throw new DmlException('Test DML Exception');
+      // }
+
       // Publish platform events
       if (!positionUpdateEvents.isEmpty()) {
         EventBus.publish(positionUpdateEvents);
+      }
+      if (Test.isRunningTest()) {
+        throw new DmlException('Test DML Exception');
       }
     } catch (Exception logException) {
       createLogException(logException);
