@@ -6,7 +6,7 @@
  * @last modified by  : Swastik Dan
  * @history           :
  **/
-public with sharing class CandidateTriggerHandler extends TriggerHandler {
+public with sharing class CandidateTriggerHandler extends ExtendedTriggerHandler {
   private List<Candidate__c> newCandidateList;
   private Map<Id, Candidate__c> newCandidateMap;
 
@@ -16,7 +16,15 @@ public with sharing class CandidateTriggerHandler extends TriggerHandler {
    **/
   public CandidateTriggerHandler() {
     this.newCandidateMap = (Map<Id, Candidate__c>) Trigger.newMap;
-    this.setMaxLoopCount(1);
+    // this.setMaxLoopCount(1);
+  }
+
+  public override boolean isTriggerEnabled() {
+    // CandidateTrigger
+    return sobject_Trigger_Manager__mdt.getInstance('CANDIDATE_TRIGGER')
+        .disableTrigger__c == true
+      ? false
+      : true;
   }
 
   /**

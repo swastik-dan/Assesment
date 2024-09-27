@@ -6,7 +6,7 @@
  * @last modified by  : Swastik Dan
  * @history           :
  **/
-public with sharing class PositionTriggerHandler extends TriggerHandler {
+public with sharing class PositionTriggerHandler extends ExtendedTriggerHandler {
   private Map<Id, Position__c> oldPositionMap;
   private Map<Id, Position__c> newPositionMap;
   private Map<String, Schema.SObjectField> fieldMap;
@@ -32,6 +32,13 @@ public with sharing class PositionTriggerHandler extends TriggerHandler {
       .get('Position__c')
       .getDescribe()
       .fields.getMap();
+  }
+  public override boolean isTriggerEnabled() {
+    // CandidateTrigger
+    return sobject_Trigger_Manager__mdt.getInstance('POSITION_TRIGGER')
+        .disableTrigger__c == true
+      ? false
+      : true;
   }
 
   /**

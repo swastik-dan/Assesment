@@ -1,0 +1,39 @@
+<!--
+  @description       : 
+  @author            : Swastik Dan
+  @group             : 
+  @last modified on  : 09-27-2024
+  @last modified by  : Swastik Dan
+  @history           : 
+-->
+<template >
+    <section class="slds-var-p-around_medium background-section slds-text-heading_small">
+        <div>
+            <h1 class="slds-text-heading_large">
+                Active Job Postings
+            </h1>
+        </div>
+        <div class="slds-grid slds-gutters slds-var-p-bottom_large ">
+            <div class="slds-col">
+                <lightning-input type="text"  label="Filer by Department" placeholder="Please Input Departmaent Name " value={department} onchange={handleDepartmentChange} > </lightning-input>
+            </div>
+            <div class="slds-col">
+                <lightning-input type="date" value={startDate} label="Start Date"  placeholder="Please Choose any date" onchange={handleStartDateChange} > </lightning-input>
+            </div>
+            <div class="slds-col">
+                <lightning-input  type="date" value={endDate} label="End Date" placeholder="Please choose any date" onchange={handleEndDateChange}  > </lightning-input>
+            </div>
+
+            
+
+            </div>
+            <div style="height: 65vh">
+                <lightning-datatable
+                        key-field="id"
+                        data={data}
+                        columns={columns}>
+                </lightning-datatable>
+            </div>
+        
+        </section>  
+</template>

@@ -1,0 +1,20 @@
+<!--
+  @description       : 
+  @author            : Swastik Dan
+  @group             : 
+  @last modified on  : 09-27-2024
+  @last modified by  : Swastik Dan
+  @history           : 
+-->
+<template>
+    <div class="slds-var-p-around_medium lgc-bg">
+        <lightning-input type="number" label="Enter the limit" onchange={handleChange}></lightning-input>
+    </div>
+    <template for:each={candidates.data} for:item="candidate">
+        <lightning-layout vertical-align="center" key={candidate.Id}>
+            <li>
+               {candidate.First_Name__c} {candidate.Last_Name__c}
+            </li>
+        </lightning-layout>
+    </template>
+</template>
