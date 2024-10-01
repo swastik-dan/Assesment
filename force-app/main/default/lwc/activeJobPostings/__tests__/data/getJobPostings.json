@@ -1,0 +1,16 @@
+[
+    {
+        "Id": "a0GNS00000RxcZZ2AZ",
+        "Job_Name__c": "Test Job",
+        "Department__c": "IT",
+        "CreatedDate": "2024-09-27T09:25:29.000Z",
+        "Active__c": true
+    },
+    {
+        "Id": "a0GNS00000RxcbB2AR",
+        "Job_Name__c": "Second Job",
+        "Department__c": "Design",
+        "CreatedDate": "2024-09-27T09:25:49.000Z",
+        "Active__c": true
+    }
+]

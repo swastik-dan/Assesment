@@ -2,7 +2,7 @@
  * @description       :
  * @author            : Swastik Dan
  * @group             :
- * @last modified on  : 09-26-2024
+ * @last modified on  : 09-30-2024
  * @last modified by  : Swastik Dan
  * @history           :
  **/
@@ -108,5 +108,13 @@ public with sharing class TestHelper {
     user.LanguageLocaleKey = 'en_US';
 
     return user;
+  }
+
+  public static String formatDate(DateTime inputDate) {
+    if (inputDate == null) {
+      return null; // Handle null input if necessary
+    }
+    // Format the DateTime to String
+    return inputDate.format('yyyy-MM-dd');
   }
 }
