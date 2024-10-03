@@ -2,7 +2,7 @@
  * @description       :
  * @author            : Swastik Dan
  * @group             :
- * @last modified on  : 09-30-2024
+ * @last modified on  : 10-01-2024
  * @last modified by  : Swastik Dan
  * @history           :
  **/
@@ -11,14 +11,14 @@
 private class ActiveJobPostingsTest {
   @TestSetup
   static void makeData() {
-    User adminUser = TestHelper.createUserWithProfile(
+    User adminUser = CommonTestHelper.createUserWithProfile(
       'System Administrator',
       'adminuser@user.test',
       'admin'
     );
     insert adminUser;
 
-    User profileRestrictedUser = TestHelper.createUserWithProfile(
+    User profileRestrictedUser = CommonTestHelper.createUserWithProfile(
       'Standard Employee',
       'restricteduser@user.test',
       'restric'
@@ -87,8 +87,8 @@ private class ActiveJobPostingsTest {
     Date startDate = today.addDays(-5);
     Date endDate = today.addDays(5);
 
-    String startDateString = TestHelper.formatDate(startDate);
-    String endDateString = TestHelper.formatDate(endDate);
+    String startDateString = CommonTestHelper.formatDate(startDate);
+    String endDateString = CommonTestHelper.formatDate(endDate);
 
     // Call the method with string dates
     List<Job_Posting__c> jobPostings = ActiveJobPostingDataHandler.getActiveJobPostings(

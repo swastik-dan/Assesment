@@ -2,7 +2,7 @@
  * @description       : Test class for CandidateTriggerHandler class to test the trigger functionality of Candidate object
  * @author            : Swastik Dan
  * @group             :
- * @last modified on  : 09-26-2024
+ * @last modified on  : 10-01-2024
  * @last modified by  : Swastik Dan
  * @history           :
  **/
@@ -11,14 +11,14 @@
 public class CandidateTriggerTest {
   @TestSetup
   static void makeData() {
-    User adminUser = TestHelper.createUserWithProfile(
+    User adminUser = CommonTestHelper.createUserWithProfile(
       'System Administrator',
       'adminuser@user.test',
       'admin'
     );
     insert adminUser;
 
-    User profileNormalUser = TestHelper.createUserWithProfile(
+    User profileNormalUser = CommonTestHelper.createUserWithProfile(
       'Standard User',
       'restricteduser@user.test',
       'restric'
@@ -33,25 +33,21 @@ public class CandidateTriggerTest {
 
   @isTest
   static void testCandidateInsert() {
-    User adminUser = [
-      SELECT Id
-      FROM User
-      WHERE Email = 'adminuser@user.test'
-    ];
-    User normalUser = [
-      SELECT Id
-      FROM User
-      WHERE Email = 'restricteduser@user.test'
-    ];
+    User adminUser = CommonTestHelper.findUserByEmail('adminuser@user.test');
+    User normalUser = CommonTestHelper.findUserByEmail(
+      'restricteduser@user.test'
+    );
     Test.startTest();
     System.runAs(adminUser) {
-      List<Candidate__c> admincandidates = TestHelper.createGenericCandidate(4);
+      List<Candidate__c> admincandidates = CommonTestHelper.createGenericCandidate(
+        4
+      );
       insert as user admincandidates;
     }
 
     System.runAs(normalUser) {
       try {
-        List<Candidate__c> restrictedcandidates = TestHelper.createGenericCandidate(
+        List<Candidate__c> restrictedcandidates = CommonTestHelper.createGenericCandidate(
           4
         );
         insert as user restrictedcandidates;
@@ -80,8 +76,16 @@ public class CandidateTriggerTest {
       WITH USER_MODE
     ];
 
-    System.Assert.areEqual(4, adminCandidates.size(), 'Admin User');
-    System.Assert.areEqual(0, restrictedCandidates.size(), 'Normal User');
+    System.Assert.areEqual(
+      4,
+      adminCandidates.size(),
+      'Correct number of records are not inserted as Admin User'
+    );
+    System.Assert.areEqual(
+      0,
+      restrictedCandidates.size(),
+      'Records are inserted with no access'
+    );
   }
 
   /**
@@ -90,30 +94,28 @@ public class CandidateTriggerTest {
    **/
   @isTest
   static void testIfContactAlreadyExists() {
-    User adminUser = [
-      SELECT Id
-      FROM User
-      WHERE Email = 'adminuser@user.test'
-    ];
-    User normalUser = [
-      SELECT Id
-      FROM User
-      WHERE Email = 'restricteduser@user.test'
-    ];
+    User adminUser = CommonTestHelper.findUserByEmail('adminuser@user.test');
+    User normalUser = CommonTestHelper.findUserByEmail(
+      'restricteduser@user.test'
+    );
 
     Test.startTest();
     System.runAs(adminUser) {
-      List<Contact> contacts = TestHelper.createGenericContact(10, 4);
+      List<Contact> contacts = CommonTestHelper.createGenericContact(10, 4);
       insert as user contacts;
-      List<Candidate__c> candidates = TestHelper.createGenericCandidate(10);
+      List<Candidate__c> candidates = CommonTestHelper.createGenericCandidate(
+        10
+      );
       insert as user candidates;
     }
 
     System.runAs(normalUser) {
       try {
-        List<Contact> contacts = TestHelper.createGenericContact(10, 4);
+        List<Contact> contacts = CommonTestHelper.createGenericContact(10, 4);
         insert as user contacts;
-        List<Candidate__c> candidates = TestHelper.createGenericCandidate(10);
+        List<Candidate__c> candidates = CommonTestHelper.createGenericCandidate(
+          10
+        );
         insert as user candidates;
       } catch (Exception e) {
         System.assertNotEquals(
@@ -140,7 +142,15 @@ public class CandidateTriggerTest {
       WITH USER_MODE
     ];
 
-    System.Assert.areEqual(10, adminCandidates.size(), 'Admin User');
-    System.Assert.areEqual(0, restrictedCandidates.size(), 'Normal User');
+    System.Assert.areEqual(
+      10,
+      adminCandidates.size(),
+      'Correct number of records are not inserted as Admin User'
+    );
+    System.Assert.areEqual(
+      0,
+      restrictedCandidates.size(),
+      'Records are inserted with no access'
+    );
   }
 }

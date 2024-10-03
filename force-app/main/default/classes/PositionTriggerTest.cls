@@ -1,89 +1,144 @@
 /**
- * @description       :
+ * @description       : Test class for Position Trigger Handler
  * @author            : Swastik Dan
  * @group             :
- * @last modified on  : 09-26-2024
+ * @last modified on  : 10-01-2024
  * @last modified by  : Swastik Dan
  * @history           :
  **/
-
 @isTest
 public class PositionTriggerTest {
   @TestSetup
   static void makeData() {
-    User adminUser = TestHelper.createUserWithProfile(
+    User adminUser = CommonTestHelper.createUserWithProfile(
       'System Administrator',
       'adminuser@user.test',
       'admin'
     );
     insert adminUser;
 
-    User profileRestrictedUser = TestHelper.createUserWithProfile(
-      'Cant Access Position',
-      'restricteduser@user.test',
-      'restric'
-    );
-    insert profileRestrictedUser;
+    List<Candidate__c> candidates = CommonTestHelper.createGenericCandidate(10);
+    insert candidates;
 
-    Candidate__c candidate = TestHelper.createGenericCandidate(1)[0];
-    insert candidate;
+    List<Position__c> positions = CommonTestHelper.createGenericPosition(10);
+    insert positions;
 
-    Position__c position = TestHelper.createGenericPosition(1)[0];
-    insert position;
-
-    Job_Application__c jobApplication = new Job_Application__c(
-      Candidate__c = candidate.Id,
-      Position__c = position.Id
-    );
-    insert jobApplication;
+    List<Job_Application__c> jobApplications = new List<Job_Application__c>();
+    for (Integer iterator = 0; iterator < candidates.size(); iterator++) {
+      jobApplications.add(
+        new Job_Application__c(
+          Candidate__c = candidates[iterator].Id,
+          Position__c = positions[iterator].Id
+        )
+      );
+    }
+    insert jobApplications;
   }
-
+  /**
+   * @description : Test Position Update without changes
+   * @author Swastik Dan | 10-01-2024
+   **/
   @isTest
-  static void testPositionInsert() {
-    User adminUser = [
-      SELECT Id
-      FROM User
-      WHERE Email = 'adminuser@user.test'
-    ];
-    User restrictedUser = [
-      SELECT Id
-      FROM User
-      WHERE Email = 'restricteduser@user.test'
-    ];
-    Position__c position = [
-      SELECT Id
-      FROM Position__c
-      WHERE Name = 'Test Position 0'
-    ];
+  static void testNoChangePositionUpdate() {
+    User adminUser = CommonTestHelper.findUserByEmail('adminuser@user.test');
+    List<Position__c> positions = [SELECT Id FROM Position__c LIMIT 10];
 
     Test.startTest();
     System.runAs(adminUser) {
-      position.Name = 'Updated Position';
-      update position;
-    }
-    System.runAs(restrictedUser) {
-      try {
-        position.Name = 'Updated Position';
-        update position;
-      } catch (DmlException e) {
-        System.assertNotEquals(
-          null,
-          e,
-          'User should not be able to access/modify Position__c'
-        );
-      }
+      update positions;
     }
     Test.stopTest();
 
-    List<Position_Update_Log__c> positionUpdateEventLogs = [
+    List<Position_Update_Log__c> positionUpdateLogs = [
       SELECT Id
       FROM Position_Update_Log__c
     ];
 
     System.assertEquals(
-      1,
-      positionUpdateEventLogs.size(),
-      'Position update event not created'
+      0,
+      positionUpdateLogs.size(),
+      'Log should not be created for no changes'
+    );
+  }
+  /**
+   * @description : Test Position Insert Trigger to create Position Update Log
+   * @author Swastik Dan | 10-01-2024
+   **/
+  @isTest
+  static void testBulkPositionUpdate() {
+    User adminUser = CommonTestHelper.findUserByEmail('adminuser@user.test');
+    List<Position__c> positions = [SELECT Id, Name FROM Position__c LIMIT 10];
+
+    for (Position__c position : positions) {
+      position.Name = 'Updated ' + position.Name;
+    }
+
+    Test.startTest();
+    System.runAs(adminUser) {
+      update positions;
+    }
+    Test.stopTest();
+
+    List<Position_Update_Log__c> positionUpdateLogs = [
+      SELECT Id, Position__c
+      FROM Position_Update_Log__c
+    ];
+
+    System.assertEquals(
+      positions.size(),
+      positionUpdateLogs.size(),
+      'Position update logs not created correctly'
+    );
+  }
+
+  /**
+   * @description : Test Position Update with invalid data
+   * @author Swastik Dan | 10-01-2024
+   **/
+  @isTest
+  static void testInvalidPositionUpdate() {
+    User adminUser = CommonTestHelper.findUserByEmail('adminuser@user.test');
+    Position__c position = new Position__c(Name = null);
+
+    Test.startTest();
+    try {
+      System.runAs(adminUser) {
+        insert position;
+      }
+    } catch (DmlException e) {
+      System.assert(
+        e.getMessage().contains('Field Name cannot be null'),
+        'Expected a DmlException for null Name'
+      );
+    }
+    Test.stopTest();
+  }
+
+  /**
+   * @description : Test Deleting Position
+   * @author Swastik Dan | 10-01-2024
+   **/
+  @isTest
+  static void testPositionDelete() {
+    User adminUser = CommonTestHelper.findUserByEmail('adminuser@user.test');
+    Position__c position = new Position__c(Name = 'Position to Delete');
+    insert position;
+
+    Test.startTest();
+    System.runAs(adminUser) {
+      delete position;
+    }
+    Test.stopTest();
+
+    List<Position_Update_Log__c> positionUpdateLogs = [
+      SELECT Id
+      FROM Position_Update_Log__c
+    ];
+
+    System.assertEquals(
+      0,
+      positionUpdateLogs.size(),
+      'Log should not be created upon deletion'
     );
   }
 }

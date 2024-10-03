@@ -2,7 +2,7 @@
  * @description       : This class handles the trigger events for the Candidate object. It creates new contacts for new candidates and sends welcome emails to the candidates using the Candidate_Welcome_Email_Template email template. It also logs any exceptions that occur during the trigger execution.
  * @author            : Swastik Dan
  * @group             :
- * @last modified on  : 09-26-2024
+ * @last modified on  : 10-01-2024
  * @last modified by  : Swastik Dan
  * @history           :
  **/
@@ -16,7 +16,7 @@ public with sharing class CandidateTriggerHandler extends ExtendedTriggerHandler
    **/
   public CandidateTriggerHandler() {
     this.newCandidateMap = (Map<Id, Candidate__c>) Trigger.newMap;
-    // this.setMaxLoopCount(1);
+    // this.newCandidateList = (List<Candidate__c>) Trigger.new;
   }
 
   public override boolean isTriggerEnabled() {
@@ -33,8 +33,9 @@ public with sharing class CandidateTriggerHandler extends ExtendedTriggerHandler
    **/
   public override void afterInsert() {
     try {
-      // Fetch new candidates
+      // Fetch new candidates because the trigger.newMap is read-only
       this.newCandidateList = fetchCandidates(this.newCandidateMap);
+
       // Extract candidate email addresses
       List<String> candidateEmails = extractCandidateEmails(newCandidateList);
       // Fetch existing contacts using email addresses
@@ -65,6 +66,7 @@ public with sharing class CandidateTriggerHandler extends ExtendedTriggerHandler
       List<Messaging.SingleEmailMessage> emailsToSend = createEmailMessages(
         newCandidateList
       );
+
       // Send email messages
       Messaging.sendEmail(emailsToSend);
       if (Test.isRunningTest()) {
