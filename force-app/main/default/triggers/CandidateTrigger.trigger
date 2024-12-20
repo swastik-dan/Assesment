@@ -1,8 +1,8 @@
 /**
- * @description       :
+ * @description       : This is the trigger handler for the Candidate object.
  * @author            : Swastik Dan
  * @group             :
- * @last modified on  : 09-26-2024
+ * @last modified on  : 12-20-2024
  * @last modified by  : Swastik Dan
  * @history           :
  **/

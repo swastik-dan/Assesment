@@ -1,5 +1,5 @@
 /**
- * @description       : Test class for CandidateResumeGeneratorQueueable class to test the queueable functionality of Candidate object
+ * @description       :  This is a test class for GenerateResumeJob class
  * @author            : Swastik Dan
  * @group             :
  * @last modified on  : 12-21-2024
@@ -8,7 +8,7 @@
  **/
 
 @isTest
-private class CandidateResumeGeneratorQueueableTest {
+private class GenerateResumeJobTest {
   @TestSetup
   static void makeData() {
     User adminUser = CommonTestHelper.createUserWithProfile(
@@ -30,11 +30,11 @@ private class CandidateResumeGeneratorQueueableTest {
   }
 
   /**
-   * @description : Test resume queueable
-   * @author Swastik Dan | 12-21-2024
-   **/
+  * @description : Test method to test the generateResumeJob method 
+  * @author Swastik Dan | 12-21-2024 
+  **/
   @isTest
-  static void testResumeQueueable() {
+  static void testGenerateResumeJob() {
     User adminUser = CommonTestHelper.findUserByEmail('adminuser@user.test');
     User normalUser = CommonTestHelper.findUserByEmail(
       'restricteduser@user.test'
@@ -51,7 +51,7 @@ private class CandidateResumeGeneratorQueueableTest {
       for (Candidate__c candidate : candidates) {
         candidateIds.add(candidate.Id);
       }
-      System.enqueueJob(new CandidateResumeGeneratorQueueable(candidateIds));
+      GenerateResumeJob.generateResume(candidateIds);
     }
     System.runAs(normalUser) {
       List<Candidate__c> candidates = [
@@ -63,7 +63,7 @@ private class CandidateResumeGeneratorQueueableTest {
       for (Candidate__c candidate : candidates) {
         candidateIds.add(candidate.Id);
       }
-      System.enqueueJob(new CandidateResumeGeneratorQueueable(candidateIds));
+      GenerateResumeJob.generateResume(candidateIds);
     }
     Test.stopTest();
 
