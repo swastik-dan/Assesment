@@ -2,7 +2,7 @@
  * @description       :
  * @author            : Swastik Dan
  * @group             :
- * @last modified on  : 10-01-2024
+ * @last modified on  : 10-04-2024
  * @last modified by  : Swastik Dan
  * @history           :
  **/
@@ -174,6 +174,50 @@ public with sharing class CommonTestHelper {
       WHERE Email = :userEmail
       LIMIT 1
     ];
+  }
+
+  /**
+   * @description
+   * @author Swastik Dan | 10-04-2024
+   * @param candidates
+   * @param positions
+   * @return List<Job_Application__c>
+   **/
+  public static List<Job_Application__c> createJobApplicationWithRandomDetails(
+    List<Candidate__c> candidates,
+    List<Position__c> positions
+  ) {
+    List<Job_Application__c> jobApplications = new List<Job_Application__c>();
+    // Integer totalCandidates = candidates.size();
+    Integer totalJobApplication = 100;
+
+    for (Integer iterator = 0; iterator < totalJobApplication; iterator++) {
+      Job_Application__c jobApplication = new Job_Application__c(
+        Candidate__c = candidates[0].Id,
+        Position__c = positions[iterator].Id
+      );
+
+      if (iterator < 30) {
+        // First rule: Inactive Applicant
+        // jobApplication.Job_Application_Status__c = 'Inactive';
+        jobApplication.Candidate_Not_Interested__c = false;
+      } else if (iterator < 60) {
+        // Second rule: Not Selected After Interview
+        jobApplication.Job_Application_Status__c = 'Interviewed';
+        jobApplication.Candidate_Not_Interested__c = false;
+      } else if (iterator < 90) {
+        // Third rule: Application Withdrawn
+        jobApplication.Job_Application_Status__c = 'Applied';
+        jobApplication.Candidate_Not_Interested__c = true;
+      } else {
+        jobApplication.Job_Application_Status__c = 'New';
+        jobApplication.Candidate_Not_Interested__c = false;
+      }
+
+      jobApplications.add(jobApplication);
+    }
+
+    return jobApplications;
   }
 
   /**

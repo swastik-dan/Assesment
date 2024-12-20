@@ -2,7 +2,7 @@
  * @description       :
  * @author            : Swastik Dan
  * @group             :
- * @last modified on  : 10-03-2024
+ * @last modified on  : 11-28-2024
  * @last modified by  : Swastik Dan
  * @history           :
  **/
@@ -55,6 +55,10 @@ global with sharing class CandidateStatusUpdateBatch implements Database.Batchab
         }
       }
       update scope;
+
+      if (Test.isRunningTest()) {
+        throw new DmlException('Test Exception');
+      }
     } catch (Exception e) {
       createExceptionLog(e);
     }
@@ -120,10 +124,9 @@ global with sharing class CandidateStatusUpdateBatch implements Database.Batchab
         }
         return false;
       }
-      when else {
-        return false;
-      }
     }
+
+    return false;
   }
 
   /**

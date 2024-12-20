@@ -1,12 +1,23 @@
+/*
+
+TODO : CODE FLOW 
+* 1. Fetch the new candidates from the trigger.newMap to updation of the candidate records if the contact is not present.
+* 2. Find the contacts with the email addresses of the candidates if they exist in the system add them to  the candidate records else create new contacts for the candidates and add them to the candidate records.
+* 3. Update the candidate records with the contact IDs.
+* 4. Create email messages for the candidates using the Candidate_Welcome_Email_Template email template.
+* 5. Send the email messages to the candidates.
+* 6. Log any exceptions that occur during the trigger execution.
+*/
+
 /**
  * @description       : This class handles the trigger events for the Candidate object. It creates new contacts for new candidates and sends welcome emails to the candidates using the Candidate_Welcome_Email_Template email template. It also logs any exceptions that occur during the trigger execution.
  * @author            : Swastik Dan
  * @group             :
- * @last modified on  : 10-01-2024
+ * @last modified on  : 12-20-2024
  * @last modified by  : Swastik Dan
  * @history           :
  **/
-public with sharing class CandidateTriggerHandler extends ExtendedTriggerHandler {
+public without sharing class CandidateTriggerHandler extends ExtendedTriggerHandler {
   private List<Candidate__c> newCandidateList;
   private Map<Id, Candidate__c> newCandidateMap;
 
@@ -20,7 +31,7 @@ public with sharing class CandidateTriggerHandler extends ExtendedTriggerHandler
   }
 
   public override boolean isTriggerEnabled() {
-    // CandidateTrigger
+    // CandidateTrigger on top
     return sobject_Trigger_Manager__mdt.getInstance('CANDIDATE_TRIGGER')
         .disableTrigger__c == true
       ? false
@@ -75,6 +86,23 @@ public with sharing class CandidateTriggerHandler extends ExtendedTriggerHandler
     } catch (Exception e) {
       logException(e);
     }
+  }
+
+  /**
+   * @description
+   * @author Swastik Dan | 10-26-2024
+   * @param candidateList
+   * @return List<Job_Application__c>
+   **/
+  private List<Job_Application__c> fetchJobApplications(
+    List<Candidate__c> candidateList
+  ) {
+    return [
+      SELECT Id, Candidate__c, Job_Application_Status__c
+      FROM Job_Application__c
+      WHERE Candidate__c IN :candidateList
+      WITH USER_MODE
+    ];
   }
 
   /**
@@ -140,7 +168,10 @@ public with sharing class CandidateTriggerHandler extends ExtendedTriggerHandler
     List<Contact> contactsToInsert = new List<Contact>();
     // Create new contacts if candidate email does not exist in the map
     for (Candidate__c candidate : candidates) {
-      if (!emailToContactIdMap.containsKey(candidate.Email__c)) {
+      if (
+        !emailToContactIdMap.isEmpty() &&
+        !emailToContactIdMap.containsKey(candidate.Email__c)
+      ) {
         // Create new contact from candidate
         Contact newContact = createContactFromCandidate(candidate);
         contactsToInsert.add(newContact);
@@ -173,6 +204,7 @@ public with sharing class CandidateTriggerHandler extends ExtendedTriggerHandler
     List<Candidate__c> candidates
   ) {
     List<Messaging.SingleEmailMessage> emailsToSend = new List<Messaging.SingleEmailMessage>();
+
     for (Candidate__c candidate : candidates) {
       Messaging.SingleEmailMessage email = createEmailMessage(
         candidate,

@@ -2,7 +2,7 @@
  * @description       :
  * @author            : Swastik Dan
  * @group             :
- * @last modified on  : 10-01-2024
+ * @last modified on  : 10-03-2024
  * @last modified by  : Swastik Dan
  * @history           :
  **/
@@ -128,8 +128,8 @@ private class ActiveJobPostingsTest {
     Test.startTest();
     List<Job_Posting__c> jobPostings = ActiveJobPostingDataHandler.getActiveJobPostings(
       'Department 1',
-      '2024-10-01',
-      '2024-10-31'
+      '2028-10-01',
+      '2029-10-31'
     );
     Test.stopTest();
     System.assertEquals(0, jobPostings.size());

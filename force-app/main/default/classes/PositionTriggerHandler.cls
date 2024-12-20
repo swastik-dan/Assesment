@@ -2,7 +2,7 @@
  * @description       : This class handles the trigger operations for Position object. It logs the changes made to the position records and sends notification emails to candidates who have applied for the updated positions.
  * @author            : Swastik Dan
  * @group             :
- * @last modified on  : 10-03-2024
+ * @last modified on  : 12-20-2024
  * @last modified by  : Swastik Dan
  * @history           :
  **/
@@ -61,6 +61,7 @@ public with sharing class PositionTriggerHandler extends ExtendedTriggerHandler 
       if (!positionUpdateEvents.isEmpty() && this.numberOfFieldsUpdated > 0) {
         EventBus.publish(positionUpdateEvents);
       }
+
       if (Test.isRunningTest()) {
         throw new DmlException('Test DML Exception');
       }
@@ -124,6 +125,7 @@ public with sharing class PositionTriggerHandler extends ExtendedTriggerHandler 
       }
     }
   }
+
   /**
    * @description : This method creates a platform event for the updated position record. It sets the position ID, email subject, and message in the platform event fields and returns the event instance.
    * @author Swastik Dan | 10-01-2024
