@@ -1,8 +1,8 @@
 /**
- * @description       :
+ * @description       : This is the trigger handler for Position object.
  * @author            : Swastik Dan
  * @group             :
- * @last modified on  : 10-08-2024
+ * @last modified on  : 12-21-2024
  * @last modified by  : Swastik Dan
  * @history           :
  **/
