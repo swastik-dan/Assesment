@@ -2,7 +2,7 @@
  * @description       :  Trigger handler for Job Application object to generate candidate resumes as PDFs and attach them to candidate records.
  * @author            : Swastik Dan
  * @group             :
- * @last modified on  : 12-20-2024
+ * @last modified on  : 12-29-2024
  * @last modified by  : Swastik Dan
  * @history           :
  **/
@@ -28,10 +28,7 @@ public without sharing class JobApplicationTriggerHandler extends ExtendedTrigge
    * @return boolean
    **/
   public override boolean isTriggerEnabled() {
-    return sobject_Trigger_Manager__mdt.getInstance(JOB_APPLICATION_TRIGGER)
-        .disableTrigger__c == true
-      ? false
-      : true;
+    return sobject_Trigger_Manager__mdt.getInstance(JOB_APPLICATION_TRIGGER).disableTrigger__c == true ? false : true;
   }
 
   /**
@@ -40,9 +37,8 @@ public without sharing class JobApplicationTriggerHandler extends ExtendedTrigge
    **/
   public override void afterUpdate() {
     // Fetch job applications based on the new job application map
-    List<Job_Application__c> jobApplicationList = fetchJobApplications(
-      this.newJobApplicationMap
-    );
+    List<Job_Application__c> jobApplicationList = fetchJobApplications(this.newJobApplicationMap);
+
     // List to store candidate IDs
     List<Id> candidateIdList = new List<Id>();
     // Loop through job applications to check for shortlisted candidates
@@ -63,9 +59,7 @@ public without sharing class JobApplicationTriggerHandler extends ExtendedTrigge
    * @param newJobApplicationMap
    * @return List<Job_Application__c>
    **/
-  private List<Job_Application__c> fetchJobApplications(
-    Map<Id, Job_Application__c> newJobApplicationMap
-  ) {
+  private List<Job_Application__c> fetchJobApplications(Map<Id, Job_Application__c> newJobApplicationMap) {
     return [
       SELECT Id, Candidate__c, Job_Application_Status__c
       FROM Job_Application__c

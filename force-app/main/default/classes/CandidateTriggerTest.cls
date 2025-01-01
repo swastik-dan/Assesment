@@ -2,7 +2,7 @@
  * @description       : Test class for CandidateTriggerHandler class to test the trigger functionality of Candidate object
  * @author            : Swastik Dan
  * @group             :
- * @last modified on  : 12-20-2024
+ * @last modified on  : 12-22-2024
  * @last modified by  : Swastik Dan
  * @history           :
  **/
@@ -165,7 +165,7 @@ public class CandidateTriggerTest {
  * @description       :
  * @author            : Swastik Dan
  * @group             :
- * @last modified on  : 12-20-2024
+ * @last modified on  : 12-22-2024
  * @last modified by  : Swastik Dan
  * @history           :
  **/

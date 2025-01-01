@@ -1,39 +1,82 @@
 <!--
-  @description       : 
+  @description       : Active Job Postings HTML file to display the active job postings in the datatable with filters for department, start date and end date.
   @author            : Swastik Dan
   @group             : 
-  @last modified on  : 09-30-2024
+  @last modified on  : 12-21-2024
   @last modified by  : Swastik Dan
   @history           : 
 -->
-<template >
+
+<template>
     <section class="slds-var-p-around_medium background-section slds-text-heading_small">
         <div>
             <h1 class="slds-text-heading_large">
                 Active Job Postings
             </h1>
         </div>
-        <div class="slds-grid slds-gutters slds-var-p-bottom_large ">
+        <div class="slds-grid slds-gutters slds-var-p-bottom_large">
             <div class="slds-col">
-                <lightning-input type="text"  label="Filer by Department" placeholder="Please Input Departmaent Name " value={department} onchange={handleDepartmentChange} > </lightning-input>
-            </div>
-            <div class="slds-col">
-                <lightning-input type="date" value={startDate} label="Start Date"  placeholder="Please Choose any date" onchange={handleStartDateChange} > </lightning-input>
+                <lightning-input type="text" label="Filter by Department" placeholder="Please Input Department Name" value={department} onchange={handleDepartmentChange}></lightning-input>
             </div>
             <div class="slds-col">
-                <lightning-input  type="date" value={endDate} label="End Date" placeholder="Please choose any date" onchange={handleEndDateChange}  > </lightning-input>
+                <lightning-input type="date" value={startDate} label="Start Date" placeholder="Please Choose any date" onchange={handleStartDateChange}></lightning-input>
             </div>
-
-            
-
+            <div class="slds-col">
+                <lightning-input type="date" value={endDate} label="End Date" placeholder="Please choose any date" onchange={handleEndDateChange}></lightning-input>
             </div>
-            <div style="height: 65vh" class="content">
-                <lightning-datatable
+        </div>
+        <div style="height: 65vh" class="content">
+            <lightning-layout multiple-rows>
+                <lightning-layout-item size="12" small-device-size="12" medium-device-size="12" large-device-size="12">
+                    <lightning-datatable
                         key-field="id"
                         data={data}
                         columns={columns}>
-                </lightning-datatable>
-            </div>
-        
-        </section>  
+                    </lightning-datatable>
+                </lightning-layout-item>
+            </lightning-layout>
+        </div>
+    </section>
 </template>
+
+
+<!-- 
+
+  @description       : 
+  @author            : Swastik Dan
+  @group             : 
+  @last modified on  : 12-21-2024
+  @last modified by  : Swastik Dan
+  @history           : 
+
+<template>
+    <section class="slds-var-p-around_medium background-section slds-text-heading_small">
+        <div>
+            <h1 class="slds-text-heading_large">
+                Active Job Postings
+            </h1>
+        </div>
+        <div class="slds-grid slds-gutters slds-var-p-bottom_large">
+            <div class="slds-col">
+                <lightning-input type="text" label="Filter by Department" placeholder="Please Input Department Name" value={department} onchange={handleDepartmentChange}></lightning-input>
+            </div>
+            <div class="slds-col">
+                <lightning-input type="date" value={startDate} label="Start Date" placeholder="Please Choose any date" onchange={handleStartDateChange}></lightning-input>
+            </div>
+            <div class="slds-col">
+                <lightning-input type="date" value={endDate} label="End Date" placeholder="Please choose any date" onchange={handleEndDateChange}></lightning-input>
+            </div>
+        </div>
+        <div style="height: 65vh" class="content">
+            <lightning-layout multiple-rows>
+                <lightning-layout-item size="12" small-device-size="12" medium-device-size="12" large-device-size="12">
+                    <lightning-datatable
+                        key-field="id"
+                        data={data}
+                        columns={columns}>
+                    </lightning-datatable>
+                </lightning-layout-item>
+            </lightning-layout>
+        </div>
+    </section>
+</template> -->

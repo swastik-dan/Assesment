@@ -2,7 +2,7 @@
  * @description       : Test class for Position Trigger Handler
  * @author            : Swastik Dan
  * @group             :
- * @last modified on  : 12-21-2024
+ * @last modified on  : 12-24-2024
  * @last modified by  : Swastik Dan
  * @history           :
  **/
@@ -10,16 +10,10 @@
 public class PositionTriggerTest {
   @TestSetup
   static void makeData() {
-    User adminUser = CommonTestHelper.createUserWithProfile(
-      'System Administrator',
-      'adminuser@user.test',
-      'admin'
-    );
+    User adminUser = CommonTestHelper.createUserWithProfile('System Administrator', 'adminuser@user.test', 'admin');
     insert adminUser;
 
-    List<Candidate__c> candidateList = CommonTestHelper.createGenericCandidate(
-      10
-    );
+    List<Candidate__c> candidateList = CommonTestHelper.createGenericCandidate(10);
     insert candidateList;
 
     List<Position__c> positionList = CommonTestHelper.createGenericPosition(10);
@@ -28,10 +22,7 @@ public class PositionTriggerTest {
     List<Job_Application__c> jobApplicationList = new List<Job_Application__c>();
     for (Integer index = 0; index < candidateList.size(); index++) {
       jobApplicationList.add(
-        new Job_Application__c(
-          Candidate__c = candidateList[index].Id,
-          Position__c = positionList[index].Id
-        )
+        new Job_Application__c(Candidate__c = candidateList[index].Id, Position__c = positionList[index].Id)
       );
     }
 
@@ -61,11 +52,7 @@ public class PositionTriggerTest {
       WHERE CreatedById = :adminUser.Id
     ];
 
-    System.assertEquals(
-      0,
-      positionUpdateList.size(),
-      'Logs should not be created for no changes'
-    );
+    System.assertEquals(0, positionUpdateList.size(), 'Logs should not be created for no changes');
   }
 
   /**
@@ -99,11 +86,7 @@ public class PositionTriggerTest {
       WHERE CreatedById = :adminUser.Id
     ];
 
-    System.assertEquals(
-      10,
-      positionUpdateList.size(),
-      'Correct number of records are not inserted as Admin User'
-    );
+    System.assertEquals(10, positionUpdateList.size(), 'Correct number of records are not inserted as Admin User');
   }
 }
 // /**

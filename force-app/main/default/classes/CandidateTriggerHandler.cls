@@ -2,7 +2,7 @@
  * @description       :   This class handles the trigger events for the Candidate object. It creates new contacts for new candidates and sends welcome emails to the candidates using the Candidate_Welcome_Email_Template email template. It also logs any exceptions that occur during the trigger execution.
  * @author            : Swastik Dan
  * @group             :
- * @last modified on  : 12-20-2024
+ * @last modified on  : 12-22-2024
  * @last modified by  : Swastik Dan
  * @history           :
  **/
@@ -27,10 +27,7 @@ public without sharing class CandidateTriggerHandler extends ExtendedTriggerHand
    * @return boolean
    **/
   public override boolean isTriggerEnabled() {
-    return sobject_Trigger_Manager__mdt.getInstance(CANDIDATE_TRIGGER)
-        .disableTrigger__c == true
-      ? false
-      : true;
+    return sobject_Trigger_Manager__mdt.getInstance(CANDIDATE_TRIGGER).disableTrigger__c == true ? false : true;
   }
 
   /**
@@ -42,18 +39,11 @@ public without sharing class CandidateTriggerHandler extends ExtendedTriggerHand
       // Fetch new candidates because the trigger.newMap is read-only
       this.newCandidateList = fetchCandidates(this.newCandidateMap);
       // Extract candidate email addresses from the list of candidates
-      List<String> candidateEmailList = extractCandidateEmails(
-        newCandidateList
-      );
+      List<String> candidateEmailList = extractCandidateEmails(newCandidateList);
       // Fetch existing contacts using email addresses
-      Map<String, Id> emailToContactIdMap = mapExistingContacts(
-        candidateEmailList
-      );
+      Map<String, Id> emailToContactIdMap = mapExistingContacts(candidateEmailList);
       // Create new contacts if candidate email does not exist in the map
-      List<Contact> contactsToInsert = createNewContacts(
-        newCandidateList,
-        emailToContactIdMap
-      );
+      List<Contact> contactsToInsert = createNewContacts(newCandidateList, emailToContactIdMap);
       // Insert new contacts if there are any, and update the map with their IDs
       if (!contactsToInsert.isEmpty()) {
         insert as user contactsToInsert;
@@ -70,9 +60,7 @@ public without sharing class CandidateTriggerHandler extends ExtendedTriggerHand
       // Update the candidate records with the contact IDs
       update as user newCandidateList;
       // Create and send email messages using the welcome email template
-      List<Messaging.SingleEmailMessage> emailsToSend = createEmailMessages(
-        newCandidateList
-      );
+      List<Messaging.SingleEmailMessage> emailsToSend = createEmailMessages(newCandidateList);
       // Send email messages
       if (!emailsToSend.isEmpty()) {
         Messaging.sendEmail(emailsToSend);
@@ -92,9 +80,7 @@ public without sharing class CandidateTriggerHandler extends ExtendedTriggerHand
    * @param candidateMap
    * @return List<Candidate__c>
    **/
-  private List<Candidate__c> fetchCandidates(
-    Map<Id, Candidate__c> candidateMap
-  ) {
+  private List<Candidate__c> fetchCandidates(Map<Id, Candidate__c> candidateMap) {
     return [
       SELECT Id, First_Name__c, Last_Name__c, Email__c, Contact__c
       FROM Candidate__c
@@ -142,10 +128,7 @@ public without sharing class CandidateTriggerHandler extends ExtendedTriggerHand
    * @param emailToContactIdMap
    * @return List<Contact>
    **/
-  private List<Contact> createNewContacts(
-    List<Candidate__c> candidates,
-    Map<String, Id> emailToContactIdMap
-  ) {
+  private List<Contact> createNewContacts(List<Candidate__c> candidates, Map<String, Id> emailToContactIdMap) {
     List<Contact> contactsToInsert = new List<Contact>();
 
     for (Candidate__c candidate : candidates) {
@@ -177,9 +160,7 @@ public without sharing class CandidateTriggerHandler extends ExtendedTriggerHand
    * @param candidates
    * @return List<Messaging.SingleEmailMessage>
    **/
-  private List<Messaging.SingleEmailMessage> createEmailMessages(
-    List<Candidate__c> candidates
-  ) {
+  private List<Messaging.SingleEmailMessage> createEmailMessages(List<Candidate__c> candidates) {
     List<Messaging.SingleEmailMessage> emailsToSend = new List<Messaging.SingleEmailMessage>();
     Id templateId = getEmailTemplateId(CANDIDATE_WELCOME_EMAIL_TEMPLATE);
     if (String.isBlank(templateId)) {
@@ -187,10 +168,7 @@ public without sharing class CandidateTriggerHandler extends ExtendedTriggerHand
     }
 
     for (Candidate__c candidate : candidates) {
-      Messaging.SingleEmailMessage email = createEmailMessage(
-        candidate,
-        templateId
-      );
+      Messaging.SingleEmailMessage email = createEmailMessage(candidate, templateId);
       emailsToSend.add(email);
     }
     return emailsToSend;
@@ -220,10 +198,7 @@ public without sharing class CandidateTriggerHandler extends ExtendedTriggerHand
    * @param templateId
    * @return Messaging.SingleEmailMessage
    **/
-  private Messaging.SingleEmailMessage createEmailMessage(
-    Candidate__c candidate,
-    Id templateId
-  ) {
+  private Messaging.SingleEmailMessage createEmailMessage(Candidate__c candidate, Id templateId) {
     Messaging.SingleEmailMessage email = new Messaging.SingleEmailMessage();
     email.setTemplateId(templateId);
     email.setTargetObjectId(candidate.Contact__c);
